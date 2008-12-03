@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+#
+# A number chain is created by continuously adding the square of the digits
+# in a number to form a new number until it has been seen before.
+# 
+# For example,
+# 
+#    44 -> 32 -> 13 -> 10 -> 1 -> 1
+#    85 -> 89 -> 145 -> 42 -> 20 -> 4 -> 16 -> 37 -> 58 -> 89
+# 
+# Therefore any chain that arrives at 1 or 89 will become stuck in an endless
+# loop. What is most amazing is that EVERY starting number will eventually
+# arrive at 1 or 89.
+# 
+# How many starting numbers below ten million will arrive at 89?
+# 
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+use List::Util '/./';
+
+my $MAX = shift // 10_000_000;
+
+my %cache;
+sub chain {
+    my $n = shift;
+    for (;;) {
+        return $cache {$n} if $cache {$n};
+        return $n if $n == 1 || $n == 89;
+        $n = sum map {$_ * $_} split // => $n;
+    }
+}
+
+for my $n (1 .. 600) {
+    $cache {$n} = chain $n;
+}
+
+my $count;
+for my $n (1 .. $MAX - 1) {
+    my $c = chain $n;
+    $count ++ if $c == 89;
+}
+
+say $count;
+
+
+__END__
