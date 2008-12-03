@@ -18,7 +18,52 @@ use strict;
 use warnings;
 no warnings 'syntax';
 
-my @peter = 
+use List::Util '/./';
+
+my @pyramid  = (1 .. 4);
+my @cube     = (1 .. 6);
+my $PYRAMIDS = 9;
+my $CUBES    = 6;
+
+my %p_roll;
+
+for my $p1 (@pyramid) {
+for my $p2 (@pyramid) {
+for my $p3 (@pyramid) {
+for my $p4 (@pyramid) {
+for my $p5 (@pyramid) {
+for my $p6 (@pyramid) {
+for my $p7 (@pyramid) {
+for my $p8 (@pyramid) {
+for my $p9 (@pyramid) {
+    my $sum = sum $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9;
+    $p_roll {$sum} ++;
+}}}}}}}}}
+
+my %c_roll;
+for my $c1 (@cube) {
+for my $c2 (@cube) {
+for my $c3 (@cube) {
+for my $c4 (@cube) {
+for my $c5 (@cube) {
+for my $c6 (@cube) {
+    my $sum = sum $c1, $c2, $c3, $c4, $c5, $c6;
+    $c_roll {$sum} ++;
+}}}}}}
+
+my ($c_wins, $ties, $p_wins) = (0, 0, 0);
+while (my ($p_val, $p_rolls) = each %p_roll) {
+    while (my ($c_val, $c_rolls) = each %c_roll) {
+        my $rolls = $p_rolls * $c_rolls;
+        if ($p_val <  $c_val) {$c_wins += $rolls}
+        if ($p_val == $c_val) {$ties   += $rolls}
+        if ($p_val >  $c_val) {$p_wins += $rolls}
+    }
+}
+
+my $pete_wins = $p_wins / ($p_wins + $ties + $c_wins);
+
+printf "%9.7f\n" => $pete_wins;
 
 
 __END__
