@@ -146,7 +146,7 @@ sub value {
     return [0, sort {$b <=> $a} map {$$_ [0]} @h];
 }
 
-open my $fh => "poker.txt" or die "open: $!";
+open my $fh => "Data/poker.txt" or die "open: $!";
 my $count = 0;
 while (<$fh>) {
     chomp;

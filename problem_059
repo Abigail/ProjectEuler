@@ -35,7 +35,7 @@ use strict;
 use warnings;
 no warnings 'syntax';
 
-my  $text   = `cat cipher1.txt`;
+my  $text   = `cat Data/cipher1.txt`;
 my  @digits = $text =~ /\d+/g;
 my  $crypt  = join "" => map {chr $_} @digits;
 
