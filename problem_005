@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+#
+# 2520 is the smallest number that can be divided by each of the numbers
+# from 1 to 10 without any remainder.
+#
+# What is the smallest number that is evenly divisible by all of the
+# numbers from 1 to 20?
+#
+
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+my $MAX = shift // 20;
+my @p   = (1) x (1 + ($MAX));
+$p [$_] = 0 for 0, 1;
+
+for (my $i = 2; $i < sqrt (@p); $i ++) {
+    next unless $p [$i];
+    for (my $j = $i * $i; $j < @p; $j += $i) {
+        $p [$j] = 0;
+    }
+}
+
+my $prod = 1;
+for (my $p = 2; $p < $MAX; $p ++) {
+    next unless $p [$p];
+    my $pow = int (log ($MAX) / log ($p));
+    $prod *= $p ** $pow;
+}
+
+say $prod;

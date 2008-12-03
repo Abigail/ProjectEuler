@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+#
+# The prime factors of 13195 are 5, 7, 13 and 29.
+#
+# What is the largest prime factor of the number 600851475143?
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+my $number = shift // 600851475143;
+
+for (my $p = 3; $p <= sqrt ($number); $p += 2) {
+    next if $number % $p;
+    $number /= $p;
+    redo;
+}
+
+say $number;
+
+__END__

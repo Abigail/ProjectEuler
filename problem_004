@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+#
+# A palindromic number reads the same both ways. The largest palindrome made
+# from the product of two 2-digit numbers is 9009 = 91 × 99.
+#
+# Find the largest palindrome made from the product of two 3-digit numbers.
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+my @digits = (100 .. 999);
+my $max    =  0;
+
+for my $d1 (@digits) {
+    for my $d2 (@digits) {
+        my $p = $d1 * $d2;
+        next unless $p eq reverse $p;
+        next unless $max < $p;
+        $max = $p;
+    }
+}
+
+say $max;
+
+
+__END__
