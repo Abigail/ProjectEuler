@@ -1,0 +1,71 @@
+#!/usr/bin/perl
+#
+# Working from left-to-right if no digit is exceeded by the digit to its left
+# it is called an increasing number; for example, 134468.
+#
+# Similarly if no digit is exceeded by the digit to its right it is called a
+# decreasing number; for example, 66420.
+#
+# We shall call a positive integer that is neither increasing nor decreasing
+# a "bouncy" number; for example, 155349.
+#
+# As n increases, the proportion of bouncy numbers below n increases such
+# that there are only 12951 numbers below one-million that are not bouncy
+# and only 277032 non-bouncy numbers below 10^(10).
+#
+# How many numbers below a googol (10^(100)) are not bouncy?
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+sub inc {
+    my ($n, $min) = @_;
+    return 0 if $n < 1 || $min > 9;
+    return 10 - $min if $n == 1;
+    my $r = 0;
+    foreach my $d ($min .. 9) {
+        $r += 1 + inc ($n - 1, $d);
+    }
+    $r;
+}
+
+sub dec {
+    my ($n, $max) = @_;
+    return 0 if $n < 1 || $max < 0;
+    return $max if $n == 1;
+    my $r = 0;
+    foreach my $d (reverse (0 .. $max)) {
+        $r += 1 + inc ($n - 1, $d);
+    }
+    $r;
+}
+
+my $DIGITS = shift // 50;
+
+my $inc  = inc $DIGITS, 1;
+my $dec  = dec $DIGITS, 9;
+   $dec -= $DIGITS; # No idea why I need this.
+my $rep  = $DIGITS * 9;
+
+say $inc + $dec - $rep;
+
+__END__
+
+my $inc_p = qr /^1*2*3*4*5*6*7*8*9*$/;
+my $dec_p = qr /^9*8*7*6*5*4*3*2*1*0*$/;
+my $inc_c = 0;
+my $dec_c = 0;
+
+my $m = '9' x $DIGITS;
+for (1 .. $m) {
+    $inc_c ++ if /$inc_p/;
+    $dec_c ++ if /$dec_p/;
+}
+say "$inc_c + $dec_c - $rep = ", $inc_c + $dec_c - $rep;
+
+
+__END__

@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+#
+# The series, 1^(1) + 2^(2) + 3^(3) + ... + 10^(10) = 10405071317.
+# 
+# Find the last ten digits of the series,
+#      1^(1) + 2^(2) + 3^(3) + ... + 1000^(1000).
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+use Math::BigInt;
+
+my $MAX = shift // 1_000;
+
+my $sum = 0;
+foreach my $n (1 .. $MAX) {
+    $sum += Math::BigInt -> new ($n) -> bpow ($n);
+}
+
+say substr $sum, -10, 10;
+
+__END__

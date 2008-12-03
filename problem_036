@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+#
+# The decimal number, 585 = 1001001001_(2) (binary), is palindromic in
+# both bases.
+#
+# Find the sum of all numbers, less than one million, which are palindromic
+# in base 10 and base 2.
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+my $MAX = shift // 1_000_000;
+my $sum = 0;
+
+for my $nd (1 .. $MAX) {
+    next unless $nd eq reverse $nd;
+    my $nb = sprintf "%b" => $nd;
+    next unless $nb eq reverse $nb;
+    $sum += $nd;
+}
+
+say $sum;
+
+
+
+__END__

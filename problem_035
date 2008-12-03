@@ -1,0 +1,39 @@
+#!/usr/bin/perl
+#
+# The number, 197, is called a circular prime because all rotations of the
+# digits: 197, 971, and 719, are themselves prime.
+# 
+# There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71,
+# 73, 79, and 97.
+#
+# How many circular primes are there below one million?
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+use Math;
+
+my $MAX = shift // 1_000_000;
+
+my @p = primes $MAX;
+my %p = map {($_ => 1)} @p;
+
+my $count = 0;
+
+OUTER:
+foreach my $p (@p) {
+    my $P = $p;
+    for (2 .. length $P) {
+        $P =~ s/(.)(.+)/$2$1/;
+        next OUTER unless $p {$P};
+    }
+    $count ++;
+}
+
+say $count;
+
+__END__
