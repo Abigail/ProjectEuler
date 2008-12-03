@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+#
+# By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can
+# see that the 6^(th) prime is 13.
+# 
+# What is the 10001^(st) prime number?
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+my $TARGET = shift // 10001;
+
+my @p = (1) x ($TARGET * 100);
+$p [0] = 0;
+$p [1] = 0;
+for (my $i = 4; $i < @p; $i += 2) {$p [$i] = 0}
+for (my $i = 3; $i <= sqrt (@p); $i += 2) {
+    next unless $p [$i];
+    for (my $j = $i * $i; $j < @p; $j += 2 * $i) {
+        $p [$j] = 0;
+    }
+}
+for (my $i = 2; $i < @p; $i ++) {
+    next unless $p [$i];
+    unless (-- $TARGET) {
+        say $i;
+        exit;
+    }
+}
+
+
+__END__

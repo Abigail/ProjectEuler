@@ -1,0 +1,38 @@
+#!/usr/bin/perl
+#
+# The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+#
+# Find the sum of all the primes below two million.
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+my $MAX = shift // 2_000_000;
+my @p   = (1) x (1 + $MAX);
+
+#
+# Sieve it.
+#
+for (my $i = 4; $i < @p; $i += 2) {
+    $p [$i] = 0;
+}
+for (my $i = 3; $i <= sqrt (@p); $i += 2) {
+    next unless $p [$i];
+    for (my $j = $i * $i; $j < @p; $j += 2 * $i) {
+        $p [$j] = 0;
+    }
+}
+
+my $sum = 0;
+for (my $i = 2; $i < @p; $i ++) {
+    $sum += $i if $p [$i];
+}
+
+say $sum;
+
+
+__END__

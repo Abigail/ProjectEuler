@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+#
+# The following iterative sequence is defined for the set of positive integers:
+# 
+#       n -> n/2 (n is even)
+#       n -> 3n + 1 (n is odd)
+# 
+# Using the rule above and starting with 13, we generate the following sequence:
+#       13 -> 40 -> 20 -> 10 -> 5 -> 16 -> 8 -> 4 -> 2 -> 1
+# 
+# It can be seen that this sequence (starting at 13 and finishing at 1)
+# contains 10 terms. Although it has not been proved yet (Collatz Problem),
+# it is thought that all starting numbers finish at 1.
+# 
+# Which starting number, under one million, produces the longest chain?
+# 
+# NOTE: Once the chain starts the terms are allowed to go above one million.
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+my %collatz = (1 => 1);
+
+sub collatz {
+    my $n = shift;
+    no warnings 'recursion';
+    $collatz {$n} ||= 1 + ($n % 2 ? collatz (3 * $n + 1)
+                                  : collatz ($n / 2));
+    return $collatz {$n};
+}
+
+my $max   = 1;
+my $max_n = 1;
+
+my $TARGET = shift // 1_000_000;
+
+for my $n (1 .. $TARGET) {
+    my $c = collatz $n;
+    if ($max < $c) {
+        $max   = $c;
+        $max_n = $n;
+    }
+}
+
+say $max_n;
+
+
+__END__

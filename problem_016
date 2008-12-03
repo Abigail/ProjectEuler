@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+#
+# 2^(15) = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
+#
+# What is the sum of the digits of the number 2^(1000)?
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+use Math::BigInt;
+
+my $POWER = shift // 1000;
+
+my $sum = 0;
+   $sum += $_ for split // => Math::BigInt -> new (2) ** $POWER;
+
+say $sum;
+
+
+__END__

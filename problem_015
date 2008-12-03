@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+#
+# Starting in the top left corner of a 2×2 grid, there are 6 routes
+# (without backtracking) to the bottom right corner.
+# 
+# How many routes are there through a 20×20 grid?
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+my $SIZE = shift // 20;
+
+my $cache;
+
+sub grid {
+    my ($x, $y) = @_;
+    $$cache [$x] [$y] ||=   $x <  0 || $y <  0 ? 0
+                          : $x == 0 && $y == 0 ? 1
+                          : grid ($x, $y - 1) + grid ($x - 1, $y);
+    return $$cache [$x] [$y];
+}
+
+say grid $SIZE, $SIZE;
+
+__END__
