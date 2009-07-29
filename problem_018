@@ -13,6 +13,8 @@
 # 
 # Find the maximum total from top to bottom of the given triangle.
 #
+# This solves both problem 18 and problem 67.
+#
 
 use 5.010;
 
@@ -22,7 +24,10 @@ no  warnings 'syntax';
 
 use List::Util 'max';
 
-open my $fh, "<", "Data/problem_018" or die $!;
+my $me = $0;
+$me =~ s!.*/!!;
+
+open my $fh, "<", "Data/$me" or die $!;
 my ($i, $triangle);
 while (<$fh>) {
     $$triangle [$i ++] = [/([0-9]+)/g];
