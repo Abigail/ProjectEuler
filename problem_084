@@ -1,0 +1,138 @@
+#!/usr/bin/perl
+
+#
+# INCORRECT!
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no  warnings 'syntax';
+
+my $FACES  = 4;
+my $TURNS  = 10_000;
+
+my @spaces = qw [GO A1 CC1 A2 T1 R1 B1 CH1 B2 B3 JAIL C1 U1 C2 C3 R2
+                 D1 CC2 D2 D3 FP E1 CH2 E2 E3 R3 F1 F2 U2 F3 G2J
+                 G1 G2 CC3 G3 R4 CH3 H1 T2 H2];
+
+my %spaces = do {my $i = 0; map {($_ => $i ++)} @spaces};
+
+my $triplets;
+
+sub CC {
+    my $place = shift;
+    given (int rand 16) {
+        when (0) {return "GO"}
+        when (1) {return "JAIL"}
+        default  {return $place}
+    }
+    die;
+}
+
+sub CH {
+    my $place = shift;
+    my $roll  = int rand 16;
+    given ($roll) {
+        when (0) {return "GO"}
+        when (1) {return "JAIL"}
+        when (2) {return "C1"}
+        when (3) {return "E3"}
+        when (4) {return "H2"}
+        when (5) {return "R1"}
+        when ($_ == 6 || $_ == 7) {
+            given ($place) {
+                when ("CH1") {return "R2"}
+                when ("CH2") {return "R3"}
+                when ("CH3") {return "R1"}
+            }
+        }
+        when (8) {
+            given ($place) {
+                when ("CH1") {return "U1"}
+                when ("CH2") {return "U2"}
+                when ("CH3") {return "U1"}
+            }
+        }
+        when (9) {
+            given ($place) {
+                when ("CH1") {return "T1"}
+                when ("CH2") {return "D3"}
+                when ("CH3") {return CC "CC3"}
+            }
+        }
+        default {return $place}
+    }
+}
+
+
+sub move {
+    my %arg     = @_;
+    my $place   = $arg {place};   # Current place.
+    my $roll    = $arg {roll};    # Roll.
+    my $doubles = $arg {doubles}; # Ref to number of doubles.
+
+    my ($r1, $r2) = @$roll;
+    if ($r1 == $r2) {
+        $$doubles ++;
+        if ($$doubles >= 3) {
+            $$doubles  = 0;
+            return "JAIL";
+        }
+    }
+    else {
+        $$doubles = 0;
+    }
+
+    my $next = $spaces [($spaces {$place} + $r1 + $r2) % @spaces];
+
+    my $save = $next;
+
+    given ($next) {
+        when (/^CC/) {$next = CC $next}
+        when (/^CH/) {$next = CH $next}
+    }
+
+    $next;
+}
+
+sub roll {
+    map {1 + int rand $FACES} 1 .. 2;
+}
+
+
+my $place   = "GO";
+my $doubles = 0;
+my %been;
+foreach my $turn (1 .. $TURNS) {
+    $place = move place   => $place,
+                  doubles => \$doubles,
+                  roll    => [roll];
+    $been {$place} ++;
+}
+
+my @names = sort {$been {$b} <=> $been {$a}} keys %been;
+
+printf "%02d" => $spaces {$_} for @names [0 .. 2];
+print  "\n";
+
+exit;
+
+my %groups;
+while (my ($name, $count) = each %been) {
+    $name =~ s/[0-9]+//g;
+    $groups {$name} += $count;
+}
+
+my @groups = sort {$groups {$b} <=> $groups {$a}} keys %groups;
+foreach my $group (@groups) {
+    printf "%4s: %6d\n" => $group, $groups {$group};
+}
+
+foreach my $name (@names) {
+    printf "%4s (%02d): %8d\n" => $name, $spaces {$name}, $been {$name};
+}
+
+
+__END__
