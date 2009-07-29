@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+
+#
+# By starting at the top of the triangle below and moving to adjacent
+# numbers on the row below, the maximum total from top to bottom is 23.
+# 
+#    3
+#   7 4
+#  2 4 6
+# 8 5 9 3
+# 
+# That is, 3 + 7 + 4 + 9 = 23.
+# 
+# Find the maximum total from top to bottom of the given triangle.
+#
+
+use 5.010;
+
+use strict;
+use warnings;
+no  warnings 'syntax';
+
+use List::Util 'max';
+
+open my $fh, "<", "Data/problem_018" or die $!;
+my ($i, $triangle);
+while (<$fh>) {
+    $$triangle [$i ++] = [/([0-9]+)/g];
+}
+
+my $max;
+$$max [0] [0] = $$triangle [0] [0];
+for (my $i = 1; $i < @$triangle; $i ++) {
+    my $size = @{$$triangle [$i]};
+    for (my $j = 0; $j < $size; $j ++) {
+        my $sum = $$triangle [$i] [$j];
+        my $add;
+        given ($j) {
+            when (0)         {$add = $$max [$i - 1] [$j]}
+            when ($size - 1) {$add = $$max [$i - 1] [$j - 1]}
+            default          {$add = max ($$max [$i - 1] [$j - 1],
+                                          $$max [$i - 1] [$j])}
+        }
+        $$max [$i] [$j] = $sum + $add;
+    }
+}
+
+say max @{$$max [-1]};
+
+
+__END__
