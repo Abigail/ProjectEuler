@@ -4,10 +4,12 @@ use 5.010;
 
 use strict;
 use warnings;
-no warnings 'syntax';
+no  warnings 'syntax';
+
+use List::Util 'sum';
 
 use Exporter ();
-our @EXPORT = qw [primes divisors];
+our @EXPORT = qw [primes divisors not_perfect];
 our @ISA    = qw [Exporter];
 
 #
@@ -27,6 +29,9 @@ sub primes {
 }
 
 
+#
+# Return all the divisors of a number
+#
 sub divisors {
     my $n = shift;
     my @divs;
@@ -38,6 +43,21 @@ sub divisors {
     @divs = sort {$a <=> $b} @divs;
     @divs;
 }
+
+
+#
+# Return -1 if the given number is deficient, 0 if the number is perfect,
+# and 1 if the number is abundant.
+#
+sub not_perfect ($) {
+    my  $n = shift;
+    my  @d = divisors $n;
+    pop @d;
+    my  $s = sum @d;
+
+    $s <=> $n;
+}
+
 
 1;
 
