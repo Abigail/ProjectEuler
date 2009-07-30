@@ -9,7 +9,7 @@ no  warnings 'syntax';
 use List::Util 'sum';
 
 use Exporter ();
-our @EXPORT = qw [primes divisors not_perfect];
+our @EXPORT = qw [primes divisors not_perfect is_prime];
 our @ISA    = qw [Exporter];
 
 #
@@ -26,6 +26,18 @@ sub primes {
         for (my $j = $i * $i; $j < @p; $j += 2 * $i) {$p [$j] = 0}
     }
     grep {$p [$_]} 2 .. $n;
+}
+
+#
+# Return whether a number is prime
+#
+sub is_prime {
+    my $n = shift;
+    my @p = primes int sqrt $n;
+    foreach my $p (@p) {
+        return 0 if $n % $p == 0;
+    }
+    return 1;
 }
 
 

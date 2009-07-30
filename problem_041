@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+#
+# We shall say that an n-digit number is pandigital if it makes use of all
+# the digits 1 to n exactly once. For example, 2143 is a 4-digit pandigital
+# and is also prime.
+# 
+# What is the largest n-digit pandigital prime that exists?
+# 
+
+#
+# Note that you cannot have a prime consisting of the digits 1 .. 9 or
+# 1 .. 8, as they sum to 45 and 36, both are divisible by 9.
+#
+# So we have at most a 7 digit prime. We can brute force that, as
+# 7! = 5040.
+#
+
+use Math;
+
+my @digits = reverse (1 .. 7);
+
+foreach my $d1 (@digits) {
+    foreach my $d2 (@digits) {
+        next if $d1 == $d2;
+        foreach my $d3 (@digits) {
+            next if $d1 == $d3 || $d2 == $d3;
+            foreach my $d4 (@digits) {
+                next if $d1 == $d4 || $d2 == $d4 || $d3 == $d4;
+                foreach my $d5 (@digits) {
+                    next if $d1 == $d5 || $d2 == $d5 || $d3 == $d5 ||
+                            $d4 == $d5;
+                    foreach my $d6 (@digits) {
+                        next if $d1 == $d6 || $d2 == $d6 || $d3 == $d6 ||
+                                $d4 == $d6 || $d5 == $d6;
+                        foreach my $d7 (@digits) {
+                            next if $d1 == $d7 || $d2 == $d7 || $d3 == $d7 ||
+                                    $d4 == $d7 || $d5 == $d7 || $d6 == $d7;
+                            next if $d7 == 2   || $d7 == 4   || $d7 == 6;
+                            my $number = "$d1$d2$d3$d4$d5$d6$d7";
+                            if (is_prime $number) {
+                                say $number;
+                                exit;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+__END__
+# Answer: 7652413
