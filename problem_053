@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+
+use 5.010;
+
+use strict;
+use warnings;
+no  warnings 'syntax';
+
+use Math::BigInt;
+
+# 
+# There are exactly ten ways of selecting three from five, 12345:
+# 
+#             123, 124, 125, 134, 135, 145, 234, 235, 245, and 345
+# 
+#                                        5
+# In combinatorics, we use the notation,  C  = 10.
+#                                          3
+# 
+#             n          n!
+# In general,  C  =  ---------, where r ≤ n, n! = n×(n−1)×...×2×1, and 0! = 1.
+#               r    r! (n-r)!
+# 
+#                                                           23
+# It is not until n = 23, that a value exceeds one-million:   C   = 1144066.
+#                                                              10
+# 
+#                                               n
+# How many, not necessarily distinct, values of  C , for 1 ≤ n ≤ 100,
+#                                                 r
+# are greater than one-million?
+#
+
+my $LIMIT = 1_000_000;
+
+my @fac = Math::BigInt -> new (1);
+
+for (my $n = 1; $n <= 100; $n ++) {
+    $fac [$n] = $fac [$n - 1] * $n;
+}
+
+sub C {
+    my ($n, $r) = @_;
+    $fac [$n] / ($fac [$r] * $fac [$n - $r]);
+}
+
+
+my $count = 0;
+for (my $n = 1; $n <= 100; $n ++) {
+    for (my $r = 1; $r <= $n; $r ++) {
+        $count ++ if $LIMIT <= C $n, $r;
+    }
+}
+
+say $count;
+
+__END__
+# Answer: 4075
