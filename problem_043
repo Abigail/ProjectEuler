@@ -1,0 +1,75 @@
+#!/usr/bin/perl
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+use List::Util 'sum';
+
+#
+# The number, 1406357289, is a 0 to 9 pandigital number because it is made
+# up of each of the digits 0 to 9 in some order, but it also has a rather
+# interesting sub-string divisibility property.
+# 
+# Let d1 be the 1^(st) digit, d2 be the 2^(nd) digit, and so on. In
+# this way, we note the following:
+#
+#   * d2 d3 d4  = 406 is divisible by 2
+#   * d3 d4 d5  = 063 is divisible by 3
+#   * d4 d5 d6  = 635 is divisible by 5
+#   * d5 d6 d7  = 357 is divisible by 7
+#   * d6 d7 d8  = 572 is divisible by 11
+#   * d7 d8 d9  = 728 is divisible by 13
+#   * d8 d9 d10 = 289 is divisible by 17
+# 
+# Find the sum of all 0 to 9 pandigital numbers with this property.
+# 
+
+my @m17 = grep {!/(.).?\1/} grep {$_ % 17 == 0} "012" .. "987";
+my @m13 = grep {!/(.).?\1/} grep {$_ % 13 == 0} "012" .. "987";
+my @m11 = grep {!/(.).?\1/} grep {$_ % 11 == 0} "012" .. "987";
+my @m7  = grep {!/(.).?\1/} grep {$_ %  7 == 0} "012" .. "987";
+my @m5  = grep {!/(.).?\1/} grep {$_ %  5 == 0} "012" .. "987";
+my @m3  = grep {!/(.).?\1/} grep {$_ %  3 == 0} "012" .. "987";
+my @m2  = grep {!/(.).?\1/} grep {$_ %  2 == 0} "012" .. "987";
+
+
+sub merge {
+    my ($tlist, $mlist) = @_;
+    my  $out;
+
+    foreach my $t (@$tlist) {
+        foreach my $m (@$mlist) {
+            my ($d, $dd) = $m =~ /^(.)(..)$/ or die;
+            next unless $dd eq substr $t, 0, 2;
+            next if $t =~ /$d/;
+            push @$out => "$d$t";
+        }
+    }
+
+    $out;
+}
+
+my $t17 = [@m17];
+my $t13 = merge  $t17, \@m13;
+my $t11 = merge  $t13, \@m11;
+my $t7  = merge  $t11, \@m7;
+my $t5  = merge  $t7,  \@m5;
+my $t3  = merge  $t5,  \@m3;
+my $t2  = merge  $t3,  \@m2;
+
+
+my @final;
+foreach my $n (@$t2) {
+    for my $d (1 .. 9) {
+        next if $n =~ $d;
+        push @final => "$d$n";
+    }
+}
+
+say sum @final;
+
+__END__
+# Answer: 16695334890
