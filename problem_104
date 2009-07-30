@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+
+use 5.010;
+
+use strict;
+use warnings;
+no warnings 'syntax';
+
+use Math::BigInt;
+
+#
+# The Fibonacci sequence is defined by the recurrence relation:
+# 
+#     F_(n) = F_(n−1) + F_(n−2), where F_(1) = 1 and F_(2) = 1.
+# 
+# It turns out that F_(541), which contains 113 digits, is the first
+# Fibonacci number for which the last nine digits are 1-9 pandigital
+# (contain all the digits 1 to 9, but not necessarily in order). And
+# F_(2749), which contains 575 digits, is the first Fibonacci number for
+# which the first nine digits are 1-9 pandigital.
+# 
+# Given that F_(k) is the first Fibonacci number for which the first nine
+# digits AND the last nine digits are 1-9 pandigital, find k.
+# 
+
+#
+# This is a brute force solution, and will take more than 1.5 hours to run.
+#
+
+my $f1    = Math::BigInt -> new (1);
+my $f2    = Math::BigInt -> new (1);
+my $count = 2;
+
+sub valid {
+    my $n = shift;
+    return if length ($n) < 9;
+    my $first = substr $n,  0, 9;
+    my $last  = substr $n, -9;
+    return if $first =~ /0/;
+    return if $last  =~ /0/;
+    return if $first =~ /(.).*\1/;
+    return if $last  =~ /(.).*\1/;
+
+    return 1;
+}
+
+$| = 1;
+while (1) {
+    ($f1, $f2) = ($f2, $f1 + $f2);
+    $count ++;
+
+    if (valid $f2) {
+        say $count;
+        exit;
+    }
+}
+
+
+__END__
+# Answer: 329468
