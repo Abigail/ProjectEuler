@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+use 5.010;
+
+use strict;
+use warnings;
+no  warnings 'syntax';
+
+# 
+# If the numbers 1 to 5 are written out in words: one, two, three, four,
+# five, then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
+# 
+# If all the numbers from 1 to 1000 (one thousand) inclusive were written
+# out in words, how many letters would be used?
+# 
+
+use Lingua::EN::Numbers qw [num2en];
+
+my $MAX = 1000;
+
+my $count;
+$count += num2en ($_) =~ y/a-zA-Z// for 1 .. $MAX;
+say $count;
+
+__END__
+# Answer: 21124
