@@ -97,15 +97,32 @@ sub C {
 #
 # The number of partitions of a number.
 #
+# Generating formula from http://mathworld.wolfram.com/PartitionFunctionP.html
+#
+
+sub part_num;
 sub part_num {
+    no warnings 'recursion';
     my $n = shift;
+
+    return 0 if $n < 0;
 
     state $parts = [1];
 
-    return $$parts [$n] if defined $$parts [$n];
-    $$parts [$n] = (sum map {sigma ($n - $_) * part_num ($_)} 0 .. $n - 1) / $n;
+    unless (defined $$parts [$n]) {
+        my $Pn = 0;
+        for (my $k  = 1; $k <= $n; $k ++) {
+            my $n1  = $n - $k * (3 * $k - 1) / 2;
+            my $n2  = $n - $k * (3 * $k + 1) / 2;
+            my $Pn1 = part_num $n1;
+            my $Pn2 = part_num $n2;
 
-    $$parts [$n]
+            $Pn += (-1) ** ($k + 1) * ($Pn1 + $Pn2);
+        }
+        $$parts [$n] = $Pn;
+    }
+
+    $$parts [$n];
 }
 
 1;
