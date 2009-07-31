@@ -7,10 +7,13 @@ use warnings;
 no  warnings 'syntax';
 
 use List::Util 'sum';
+use Math::BigInt;
 
 use Exporter ();
-our @EXPORT = qw [primes divisors not_perfect is_prime];
+our @EXPORT = qw [primes divisors not_perfect is_prime fac C sigma part_num];
 our @ISA    = qw [Exporter];
+
+my @fac;
 
 #
 # Returns a list of primes less or equal to the given number.
@@ -56,6 +59,14 @@ sub divisors {
     @divs;
 }
 
+#
+# Sum of divisors of the given number. Includes 1 and itself.
+#
+sub sigma {
+    my $n = shift;
+    sum divisors $n;
+}
+
 
 #
 # Return -1 if the given number is deficient, 0 if the number is perfect,
@@ -70,6 +81,32 @@ sub not_perfect ($) {
     $s <=> $n;
 }
 
+sub fac {
+    my $n = shift;
+    die if $n < 0;
+    $fac [$n] //= Math::BigInt -> new ($n) -> bfac;
+    $fac [$n];
+}
+
+sub C {
+    my ($n, $r) = @_;
+    fac ($n) / (fac ($r) * fac ($n - $r));
+}
+
+
+#
+# The number of partitions of a number.
+#
+sub part_num {
+    my $n = shift;
+
+    state $parts = [1];
+
+    return $$parts [$n] if defined $$parts [$n];
+    $$parts [$n] = (sum map {sigma ($n - $_) * part_num ($_)} 0 .. $n - 1) / $n;
+
+    $$parts [$n]
+}
 
 1;
 
